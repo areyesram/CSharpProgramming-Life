@@ -15,7 +15,7 @@ namespace areyesram
         private readonly Color _back = Color.FromArgb(164, 161, 118);
         private readonly Color _fore = Color.FromArgb(210, 210, 186);
 
-        private void Form_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             _graphics = Graphics.FromHwnd(Handle);
             Randomize();
@@ -51,7 +51,17 @@ namespace areyesram
                         (Cells[i - 1, j + 1] ? 1 : 0) +
                         (Cells[i, j + 1] ? 1 : 0) +
                         (Cells[i + 1, j + 1] ? 1 : 0);
-                    NewCells[i, j] = Cells[i, j] ? neighbors == 2 || neighbors == 3 : neighbors == 3;
+                    if (Cells[i, j])
+                    {
+                        // a cell with 2 or 3 neightbors lives on; else, it dies.
+                        // (less than 2, it dies of loneliness; more than 3, it starves.)
+                        NewCells[i, j] = neighbors == 2 || neighbors == 3;
+                    }
+                    else
+                    {
+                        // in an empty space with exactly 3 neighbors, a new cell is born
+                        NewCells[i, j] = neighbors == 3;
+                    }
                 }
             }
 
@@ -79,14 +89,30 @@ namespace areyesram
         private void DrawCells()
         {
             for (var x = 0; x < DishSize; x++)
+            {
                 for (var y = 0; y < DishSize; y++)
-                    if ((x - DishSize / 2) * (x - DishSize / 2) + (y - DishSize / 2) * (y - DishSize / 2) <
-                        (DishSize / 2) * (DishSize / 2))
+                {
+                    if (InsideCircle(x, y, DishSize / 2))
                         Bmp.SetPixel(x, y, Cells[x + 1, y + 1] ? _fore : _back);
+                }
+            }
             _graphics.DrawImage(Bmp, 8, 40);
         }
 
-        private void Form2_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        /// <summary>
+        /// Indicates wether a point is inside a circle of a certain radius.
+        /// </summary>
+        /// <param name="x">X coordinate of point.</param>
+        /// <param name="y">Y coordinate of point</param>
+        /// <param name="r">Radius.</param>
+        /// <remarks>Assumes the circle has its origin in (r,r).</remarks>
+        /// <returns>True if the point is inside the circle; False if not.</returns>
+        private static bool InsideCircle(int x, int y, int r)
+        {
+            return (x - r) * (x - r) + (y - r) * (y - r) < r * r;
+        }
+
+        private void MainForm_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
             _graphics.Dispose();
         }
