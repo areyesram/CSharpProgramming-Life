@@ -2,7 +2,7 @@
 
 namespace areyesram
 {
-    internal class Life
+    internal static class Life
     {
         internal static int Size
         {
