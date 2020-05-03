@@ -41,7 +41,7 @@ namespace areyesram
             DrawCells();
         }
 
-        private static readonly Bitmap Bmp = new Bitmap(DishSize, DishSize);
+        private static readonly Bitmap _bmp = new Bitmap(DishSize, DishSize);
 
         private void DrawCells()
         {
@@ -50,10 +50,10 @@ namespace areyesram
                 for (var y = 0; y < DishSize; y++)
                 {
                     if (InsideCircle(x, y, DishSize / 2))
-                        Bmp.SetPixel(x, y, Life.Cells[x + 1, y + 1] ? _fore : _back);
+                        _bmp.SetPixel(x, y, Life.Cells[x + 1, y + 1] ? _fore : _back);
                 }
             }
-            _graphics.DrawImage(Bmp, 8, 40);
+            _graphics.DrawImage(_bmp, 8, 40);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace areyesram
             return (x - r) * (x - r) + (y - r) * (y - r) < r * r;
         }
 
-        private void MainForm_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _graphics.Dispose();
         }

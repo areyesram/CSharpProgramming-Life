@@ -16,7 +16,7 @@ namespace areyesram
 
         internal static bool[,] Cells { get; private set; }
 
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
         private static int _size;
 
         internal static void NewGeneration()
